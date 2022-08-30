@@ -9,6 +9,7 @@ import time
 import ipaddress
 import sys
 
+
 # File with ip addresses to ping
 ipaddress_filename = "ip_address.txt"
 
@@ -21,7 +22,7 @@ def ping_response(queue, command=[]):
         #print(out)
         #print("\n\n\n\n")
         out_list = out.split("\n")  
-        queue.put(out_list[1])
+        queue.put(out_list[2])
         time.sleep(1)
         #summary_statistics = []
         out_list_count = 0
@@ -44,10 +45,14 @@ def ping_response(queue, command=[]):
         #time.sleep(1)
 
 def main(stdscr, queues, ip_addresses, packet_size):
-
+    
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
+    
     # List of windows
     win_list = []
+
+    # List which contains row position for printing messages in each window
+    row_pos_list = []
 
     # Max rows and columns of the screen
     max_rows, max_cols = stdscr.getmaxyx()
@@ -59,10 +64,14 @@ def main(stdscr, queues, ip_addresses, packet_size):
     
     win_offset = 70
 
+    row_start = 2
+
+    # length of queues = number of ip addresses to ping = number of windows to create
     for win in range(len(queues)):
         win = curses.newwin(max_rows, message_width, begin_y, begin_x)
         win.clear()
         win_list.append(win)
+        row_pos_list.append(row_start)
         begin_x = begin_x + win_offset
     
     #header = f"PING ipaddr (ipaddr) {packet_size} bytes of data\n\n"
@@ -75,20 +84,20 @@ def main(stdscr, queues, ip_addresses, packet_size):
             for queue_index, queue in enumerate(queues):
                 if queue.empty():
                     continue
-
                 win = win_list[queue_index]
                 try:
-                    win.addstr(f"{queue.get()}\n")
+                    win.addstr(row_pos_list[queue_index], 0, f"{queue.get()}")
+                    row_pos_list[queue_index] = row_pos_list[queue_index] + 1
                 except:
+                    row_pos_list[queue_index] = 2
                     win.clear()
                     win.addstr(f"PING {ip_addresses[queue_index]} with {packet_size} bytes of data\n\n", curses.color_pair(1)) 
                     #win.addstr(header)
-
                 win.refresh()
             time.sleep(1)
     finally:
         curses.endwin()
-
+    
 def read_ipaddress():
     # Read file with IP addresses
     print(f"Reading file {ipaddress_filename}\n")
@@ -142,7 +151,7 @@ if __name__ == "__main__":
 
     for ip in ip_addresses:
         #command = ["ping", "-s", str(packet_size), "-c", str(count), ip]
-        command = ["ping", "-s", str(packet_size), "-c", "1", ip]
+        command = ["ping", "-l", str(packet_size), "-n", "1", ip]
         my_queue = Queue()
         proc = Process(target=ping_response, args=(my_queue, command))
         queues.append(my_queue)
@@ -158,7 +167,7 @@ if __name__ == "__main__":
                     continue
                 
                 print(q.get())
-        '''    
+        '''
     except KeyboardInterrupt:
         print("Closing queues....")
         for q in queues:
