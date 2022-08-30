@@ -9,10 +9,6 @@ import time
 import ipaddress
 import sys
 
-
-# File with ip addresses to ping
-ipaddress_filename = "ip_address.txt"
-
 def ping_response(queue, command=[]):
     while True:
         #out = subprocess.check_output(command)
@@ -98,7 +94,9 @@ def main(stdscr, queues, ip_addresses, packet_size):
     finally:
         curses.endwin()
     
-def read_ipaddress():
+def read_ipaddress_file():
+
+    ipaddress_filename = input("Please enter path to ip address file:\n")
     # Read file with IP addresses
     print(f"Reading file {ipaddress_filename}\n")
     try:
@@ -128,15 +126,52 @@ def read_ipaddress():
     # Return list if ip addresses
     return ip_addr_list
 
-if __name__ == "__main__":
+def read_ipaddress_manually():
     
-    # Read file with ip addresses to pin
-    ip_addresses = read_ipaddress()
+    ip_addr_list = []
+    ip_addr = ""
+    
+    print("Please enter ip addresses. Type done when finished.")
+    while True:
+        ip_addr = input()
+        if ip_addr == "done":
+            break
+        try:
+            ipaddress.ip_address(ip_addr.rstrip())
+            ip_addr_list.append(ip_addr.rstrip())
+        except ValueError:
+            print("Error: Invalid ip enetered.")
+
+    return ip_addr_list
+
+if __name__ == "__main__":
+
+    ip_addresses = []    
+    
+    while True:
+        # Ask user to either enter ip addresses manually or read a file with ipaddresses
+        print("Please select option 1 or 2 below:")
+        print("1. Enter ip addresses manually?")
+        print("2. Read text file with ip addresses?")
+        option = input()
+
+        print("\n")
+        
+        if int(option) == 1:
+            ip_addresses = read_ipaddress_manually()
+            break
+        elif int(option) == 2:
+            ip_addresses = read_ipaddress_file()    
+            break
+        else:
+            print("Invalid option. Please select again.")
+            print("\n\n")
 
     print("\nPinging the following ip addresses:")
     for idx, ip_addr in enumerate(ip_addresses):
         print(f"{idx + 1}. {ip_addr}")
 
+    exit(0)
     # Enter packet size
     # Default is 56 bytes
     packet_size = input("\nEnter packet size(bytes):")
