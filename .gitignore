@@ -1,2 +1,5 @@
-linux/venv
-windows/venv
+linux\venv
+windows\venv
+windows\build
+windows\dist
+windows\

@@ -1,11 +1,12 @@
 import curses
 from curses import wrapper
 import time
+from multiprocessing import Process, Queue
 
 
 #test = 1
-'''
-def main(stdscr, test):
+
+def main(stdscr, queue):
     
     curses.init_pair(1, curses.COLOR_BLUE, curses.COLOR_YELLOW)
     curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
@@ -15,26 +16,27 @@ def main(stdscr, test):
 
     #counter_win = curses.newwin(20, 20, 0, 0)
     #counter_win1 = curses.newwin(20, 20, 0, 30)
-
     #for i in range(100):
     stdscr.clear()
     #counter_win.clear()
     #counter_win1.clear()
     color = BLUE_YELLOW
-    stdscr.addstr(str(test), BLUE_YELLOW)
+    while True:
+        stdscr.addstr(f"{queue.get()}\n", BLUE_YELLOW)
     #if i % 2 == 0:
      #   color = GREEN_BLACK
     
     #stdscr.addstr(f"Count: {i}", color)
     #counter_win.addstr("Hello world!\n", color)
     #counter_win1.addstr("hey wassup", GREEN_BLACK)
-    stdscr.refresh()
+        stdscr.refresh()
     #counter_win.refresh()
     #counter_win1.refresh()
     
-    time.sleep(0.1)
+        time.sleep(0.1)
     stdscr.getch()
     #counter_win.getch()
+
 '''
 def main(stdscr):
     #stdscr.scrollok(1)
@@ -55,7 +57,7 @@ def main(stdscr):
         curses.endwin()
         #wrapper(main, 1235)
         #print("hello")
-
+'''
 if __name__ == "__main__":
     '''
     w=curses.initscr()
@@ -78,5 +80,7 @@ if __name__ == "__main__":
     finally:
         curses.endwin()
     '''
-    wrapper(main)
+    my_queue = Queue()
+    my_queue.put("hasdello worlddd")
+    wrapper(main, my_queue)
         #print("hello")
