@@ -2,23 +2,22 @@
 # Python: 3.8.10
 
 from multiprocessing import Process, Queue
+import multiprocessing
 import subprocess
+from pythonping import ping
 from curses import wrapper
 import curses
 import time
 import ipaddress
 import sys
 
-def ping_response(queue, command=[]):
+def ping_response(queue, ip, packet_size, packet_count=1):
+
     while True:
-        #out = subprocess.check_output(command)
-        p = subprocess.Popen(command, stdout=subprocess.PIPE)
-        out,err = p.communicate()
-        out = out.decode()
-        #print(out)
-        #print("\n\n\n\n")
-        out_list = out.split("\n")  
-        queue.put(out_list[2])
+        ping_response = ping(ip, size=packet_size, count=packet_count, verbose=False)
+        for i in ping_response:
+            out = i
+        queue.put(out)
         time.sleep(1)
         #summary_statistics = []
         out_list_count = 0
@@ -58,7 +57,7 @@ def main(stdscr, queues, ip_addresses, packet_size):
     
     message_width = 65
     
-    win_offset = 70
+    win_offset = 65
 
     row_start = 2
 
@@ -145,15 +144,16 @@ def read_ipaddress_manually():
     return ip_addr_list
 
 if __name__ == "__main__":
-
+    multiprocessing.freeze_support()
+    
     ip_addresses = []    
     
     while True:
         # Ask user to either enter ip addresses manually or read a file with ipaddresses
-        print("Please select option 1 or 2 below:")
+        #print("Please select option 1 or 2 below:")
         print("1. Enter ip addresses manually?")
         print("2. Read text file with ip addresses?")
-        option = input()
+        option = input("Enter either option 1 or 2: ")
 
         print("\n")
         
@@ -166,41 +166,41 @@ if __name__ == "__main__":
         else:
             print("Invalid option. Please select again.")
             print("\n\n")
-
+    
+    #ip_addresses = read_ipaddress_manually()
+    #ip_addresses = ["172.17.106.2"]
     print("\nPinging the following ip addresses:")
     for idx, ip_addr in enumerate(ip_addresses):
         print(f"{idx + 1}. {ip_addr}")
 
-    exit(0)
     # Enter packet size
     # Default is 56 bytes
     packet_size = input("\nEnter packet size(bytes):")
-
+    #packet_size = 56
+    
     # List for processes
     procs = []
     # List for queues
     queues = []
     
     #ip_addr = ["172.17.103.13", "172.17.103.14", "172.17.103.11"]
-    #ip_addr = ["172.17.103.13", "172.17.103.14", "172.17.106.1"]
-
     for ip in ip_addresses:
         #command = ["ping", "-s", str(packet_size), "-c", str(count), ip]
-        command = ["ping", "-l", str(packet_size), "-n", "1", ip]
+        #command = ["ping", "-l", str(packet_size), "-n", "1", ip]
         my_queue = Queue()
-        proc = Process(target=ping_response, args=(my_queue, command))
+        proc = Process(target=ping_response, args=(my_queue, ip, int(packet_size)))
         queues.append(my_queue)
         procs.append(proc)
         proc.start()
 
     try:
-        wrapper(main, queues, ip_addresses, packet_size)
+        wrapper(main, queues, ip_addresses, packet_size)        
         '''
         while True:
             for q in queues:
                 if q.empty():
                     continue
-                
+                #print("Am I printing ??")
                 print(q.get())
         '''
     except KeyboardInterrupt:
