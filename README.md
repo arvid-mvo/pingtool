@@ -25,6 +25,7 @@ Python Version 3.8.10
 # Python Script
 
 Clone repository:
+
 `git clone https://github.com/maneskull/ping_test.git`
   
 Change directory to either Linux or Windows:
@@ -39,7 +40,7 @@ Activate the virtual environment:
 `source venv/bin/activate`
   
 or on windows:
-`venv/Scripts/activate
+`venv/Scripts/activate`
    
 Install the above modules
 
