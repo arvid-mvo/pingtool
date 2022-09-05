@@ -25,21 +25,21 @@ Python Version 3.8.10
 # Python Script
 
 Clone repository:
-  `git clone https://github.com/maneskull/ping_test.git`
+`git clone https://github.com/maneskull/ping_test.git`
   
 Change directory to either Linux or Windows:
-  `cd linux`
-    or
-  `cd windows`
+`cd linux`
+ or
+`cd windows`
   
 Create and activate virtual environment which will be stored in venv:
-  `python -m venv venv`
+`python -m venv venv`
 
 Activate the virtual environment:
-  `source venv/bin/activate`
+`source venv/bin/activate`
   
 or on windows:
-   `venv/Scripts/activate
+`venv/Scripts/activate
    
 Install the above modules
 
