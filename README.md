@@ -26,7 +26,7 @@ Python Version 3.8.10
 
 Clone repository:
 
-`git clone https://github.com/maneskull/ping_test.git`
+  `git clone https://github.com/maneskull/ping_test.git`
   
 Change directory to either Linux or Windows:
 `cd linux`
