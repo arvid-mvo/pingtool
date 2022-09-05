@@ -13,10 +13,11 @@ Version for both windows and Linux.
 Python Version 3.8.10
 
 ## Modules
-Multiprocessing (Process, and Queue)
-subprocess
-curses (wrapper)
-time
-ipaddress
-sys
-pythonping (for windows only)
+- Multiprocessing (Process, and Queue)
+- subprocess
+- curses
+- curses (wrapper)
+- time
+- ipaddress
+- sys
+- pythonping (for windows only)
