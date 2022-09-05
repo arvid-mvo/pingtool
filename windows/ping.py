@@ -55,15 +55,19 @@ def main(stdscr, queues, ip_addresses, packet_size):
     begin_x = begin_y = 0
     #curses.newwin(nlines:height, ncols:width, begin_y: topside_y_coordinate, begin_x: leftside_x_coordinate)
     
-    message_width = 65
+    message_width = 55
     
-    win_offset = 65
+    win_offset = 55
 
     row_start = 2
 
     # length of queues = number of ip addresses to ping = number of windows to create
     for win in range(len(queues)):
-        win = curses.newwin(max_rows, message_width, begin_y, begin_x)
+        try:
+            win = curses.newwin(max_rows, message_width, begin_y, begin_x)
+        except:
+            print("Please full screen console window or ping fewer ip addresses.")
+            sys.exit()
         win.clear()
         win_list.append(win)
         row_pos_list.append(row_start)
