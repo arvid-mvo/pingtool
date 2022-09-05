@@ -1,4 +1,4 @@
-# OS: Ubuntu 20.04.4 LTS (Focial Fossa)
+# OS: Windows 10
 # Python: 3.8.10
 
 from multiprocessing import Process, Queue
