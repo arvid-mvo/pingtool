@@ -36,11 +36,11 @@ or
 
   `cd windows`
   
-Create and activate virtual environment which will be stored in venv:
+Create virtual environment (venv):
 
 `python -m venv venv`
 
-Activate the virtual environment:
+Activate the virtual environment (venv):
 
 `source venv/bin/activate`
   
@@ -53,3 +53,11 @@ Install the above modules
 Run script:
 
 `python ping.py`
+
+## Operation
+
+When the script is executed, it prompts the user to enter the IP addresses they wish to ping either manually or reading from a file. Basic checking is done on the ip addresses entered to verify they are of correct format and the script will notfiy the user of any errors.
+
+Once the IP addresses has been entered, the script verifys to the user the ip addresses to ping and then prompts the user to enter the packet size. Once the packet size is entered, the script begins to display the output of the ping results to the curses screen.
+
+Example output of execution of the script:
