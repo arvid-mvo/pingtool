@@ -1,5 +1,8 @@
 # ping_test
 
+**IMPORTANT** !!!
+Still in development with bugs to be fixed and other features to add.
+
 Python tool for viewing the output of a ping command on multiple ip addresses at the same time.
 
 The tool uses the curses library in python to generate a screen where the ping results are displayed. Multiprocessing is used to get the output of each ping result which is sent to the curses screen.
