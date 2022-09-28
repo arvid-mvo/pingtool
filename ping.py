@@ -250,5 +250,9 @@ def main():
 
 if __name__ == "__main__":
     
+    # windows only
+    if platform == "win32":
+        multiprocessing.freeze_support()
+    
     main()
     
