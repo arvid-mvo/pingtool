@@ -1,5 +1,6 @@
 import ipaddress
 import sys
+import math
 
 def read_ipaddress_file():
 
@@ -50,3 +51,13 @@ def read_ipaddress_manually():
             print("Error: Invalid ip enetered.")
 
     return ip_addr_list
+
+def windows_per_row(screen_maxwidth, window_width, window_spacing):
+    
+    windows_per_row = screen_maxwidth/(window_width + window_spacing)
+    if (math.ceil(windows_per_row) * (window_width + window_spacing)) > screen_maxwidth:
+        windows_per_row = int(windows_per_row)
+    else:
+        windows_per_row = math.ceil(windows_per_row) 
+
+    return windows_per_row
