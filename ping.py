@@ -2,6 +2,7 @@
 # Python: 3.8.10
 
 from multiprocessing import Process, Queue
+import multiprocessing
 import subprocess
 from pythonping import ping
 from curses import wrapper
@@ -10,6 +11,7 @@ import time
 import sys
 from sys import platform
 import pingutils
+import math
 
 # File with ip addresses to ping
 ipaddress_filename = "ip_address.txt"
@@ -89,43 +91,77 @@ This function creates the screen to dislay the ping responses using the curses l
 '''
 # Curses screen to display ping response
 def screen(stdscr, queues, ip_addresses, packet_size):
-
+    #curses.newwin(nlines:height, ncols:width, begin_y: topside_y_coordinate, begin_x: leftside_x_coordinate)
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
     
     # List of windows
     win_list = []
 
-    # List which contains row position for printing messages in each window
+    # List which contains row position for each window which determines the position to start printing messages
     row_pos_list = []
 
-    # Max rows and columns of the screen
-    max_rows, max_cols = stdscr.getmaxyx()
-
-    begin_x = begin_y = 0
-    #curses.newwin(nlines:height, ncols:width, begin_y: topside_y_coordinate, begin_x: leftside_x_coordinate)
+    # Max height and width of the screen
+    # height = rows = y
+    # width = columns = x
+    screen_maxheight, screen_maxwidth = stdscr.getmaxyx()
+    #print(f"{screen_maxheight}            {screen_maxwidth}")
     
-    message_width = 65
-    win_offset = 70
-    row_start = 2
+    # General parameters
+    beginx = beginy = 0 # x and y coords for where to position windows within the screen
+    if platform == "win32":
+        window_width = 55 # window width
+    else:
+        window_width = 65
+    window_height = 0 # window height
+    window_height_adjust = 5 # adjust window height when creating new windows
+    window_spacing = 5 # horizontal spacing between windows
+    row_spacing = 2 # spacing between rows
+    row_start = 2 # row position in a window where to begin printing messages
 
-    # length of queues = number of ip addresses to ping = number of windows to create
-    for win in range(len(queues)):
+    # Calculate how every window is going to fit on the screen.
+    # The number of windows = number of ip addresses to ping.
+    # First we calculate how many windows we can fit on one row across the screen which is a function of:
+    #   screen max width
+    #   window width
+    #   window spacing    
+    windows_per_row = pingutils.windows_per_row(screen_maxwidth, window_width, window_spacing)
+    #print(f"windows per row: {windows_per_row}")
+  
+    # Calculate number of rows needed to fit all windows.
+    num_rows = math.ceil(len(ip_addresses)/windows_per_row)
+    #print(f"number of rows: {num_rows}")
+    # Window height will be based on number of rows.
+    window_height = int(screen_maxheight/num_rows)
+    # Begin to place each window on the screen.
+    for win in range(len(ip_addresses)):
+        # This if statement determines when we have to place a new row of windows on the screen.
+        # Adjust beginy accordingly and set beginx = 0.
+        if (beginx + window_width + window_spacing) > screen_maxwidth:
+            beginy = beginy + window_height + row_spacing
+            beginx = 0
         try:
-            win = curses.newwin(max_rows, message_width, begin_y, begin_x)
+            #print(f"{window_height}  {window_width}  {beginy}  {beginx}")
+            # Create window and place on screen.
+            # Catch any exception, print error message and exit program.
+            win = curses.newwin(window_height-window_height_adjust, window_width, beginy, beginx)
         except:
-            print("Please full screen console window or ping fewer ip addresses.")
+            print("Please check placement of windows. Exiting...")
             sys.exit()
-        win.clear()
+        # Append created windows to a list
         win_list.append(win)
         row_pos_list.append(row_start)
-        begin_x = begin_x + win_offset
-    
+        # Update beginx
+        beginx = beginx + window_width + window_spacing
+
+    #ignore = stdscr.getch()
+    #sys.exit()
     #header = f"PING ipaddr (ipaddr) {packet_size} bytes of data\n\n"
     try:
         for win_index, win in enumerate(win_list):
             win.addstr(f"PING {ip_addresses[win_index]} with {packet_size} bytes of data\n\n", curses.color_pair(1)) 
             win.refresh()      
         #win.addstr(header)
+        to = 0
         while True: 
             for queue_index, queue in enumerate(queues):
                 if queue.empty():
@@ -141,6 +177,12 @@ def screen(stdscr, queues, ip_addresses, packet_size):
                     #win.addstr(header)
                 win.refresh()
             time.sleep(1)
+            to = to + 1
+            #if to == 3:
+                #break
+        
+        #ignore = stdscr.getch()
+
     finally:
         curses.endwin()
 
@@ -182,16 +224,16 @@ Main Process
 '''
 def main():
 
-    ip_addresses = []    
+    #ip_addresses = ["172.17.106.1", "172.17.106.2", "172.17.106.3", "172.17.106.4", "172.17.106.4"]    
+    #ip_addresses = ["172.20.0.10", "172.20.0.11", "172.20.0.10", "172.20.0.11", "172.20.0.10",  "172.20.0.11", "172.20.0.10"]    
+    #ip_addresses = ["172.20.0.10", "172.20.0.11", "172.20.0.65", "172.20.0.66", "172.20.0.67", "172.20.0.68"]
     
     while True:
         # Ask user to either enter ip addresses manually or read a file with ipaddresses
-        #print("Please select option 1 or 2 below:")
+        print("Please select option 1 or 2 below:")
         print("1. Enter ip addresses manually?")
         print("2. Read text file with ip addresses?")
-        option = input("Enter either option 1 or 2: ")
-
-        print("\n")
+        option = input("")
         
         if int(option) == 1:
             ip_addresses = pingutils.read_ipaddress_manually()
@@ -202,17 +244,19 @@ def main():
         else:
             print("Invalid option. Please select again.")
             print("\n\n")
-    
+
     #ip_addresses = read_ipaddress_manually()
     #ip_addresses = ["172.17.106.2"]
     print("\nPinging the following ip addresses:")
     for idx, ip_addr in enumerate(ip_addresses):
         print(f"{idx + 1}. {ip_addr}")
 
+    '''
     # Enter packet size
     # Default is 56 bytes
     packet_size = input("\nEnter packet size (default is 56 bytes):")
-    #packet_size = 56
+    '''
+    packet_size = 56
     
     # List for processes
     procs = []
