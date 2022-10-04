@@ -251,6 +251,7 @@ def main():
     for idx, ip_addr in enumerate(ip_addresses):
         print(f"{idx + 1}. {ip_addr}")
 
+    input("Press enter to continue")
     '''
     # Enter packet size
     # Default is 56 bytes
