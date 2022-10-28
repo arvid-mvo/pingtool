@@ -12,10 +12,15 @@ import sys
 from sys import platform
 import pingutils
 import math
+import csv
+import os
+import traceback
 
 # File with ip addresses to ping
 ipaddress_filename = "ip_address.txt"
 
+# Name of csv file to store ping response times
+ping_response_times_csv = "ping_response_times.csv"
 '''
 ping_response_linux():
 
@@ -74,9 +79,9 @@ def ping_response_win(queue, ip, packet_size, packet_count=1):
         ping_response = ping(ip, size=packet_size, count=packet_count, verbose=False)
         for item in ping_response:
             out = item
+        
         queue.put(out)
         time.sleep(1)
-
 
 '''
 screen()
@@ -90,7 +95,7 @@ Args:
 This function creates the screen to dislay the ping responses using the curses library.
 '''
 # Curses screen to display ping response
-def screen(stdscr, queues, ip_addresses, packet_size):
+def screen(stdscr, queues, ip_addresses, packet_size, csv_writer, fp):
     #curses.newwin(nlines:height, ncols:width, begin_y: topside_y_coordinate, begin_x: leftside_x_coordinate)
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
     
@@ -132,6 +137,7 @@ def screen(stdscr, queues, ip_addresses, packet_size):
     #print(f"number of rows: {num_rows}")
     # Window height will be based on number of rows.
     window_height = int(screen_maxheight/num_rows)
+    
     # Begin to place each window on the screen.
     for win in range(len(ip_addresses)):
         # This if statement determines when we have to place a new row of windows on the screen.
@@ -153,22 +159,44 @@ def screen(stdscr, queues, ip_addresses, packet_size):
         # Update beginx
         beginx = beginx + window_width + window_spacing
 
+    ip_addresses_temp = ip_addresses
+    #ip_addresses_temp.insert(0, "data_value")
+    csv_writer.writerow(ip_addresses_temp)
+    #fp.flush()
+    #exit()
+    
     #ignore = stdscr.getch()
     #sys.exit()
     #header = f"PING ipaddr (ipaddr) {packet_size} bytes of data\n\n"
+    data_value = 1
     try:
         for win_index, win in enumerate(win_list):
             win.addstr(f"PING {ip_addresses[win_index]} with {packet_size} bytes of data\n\n", curses.color_pair(1)) 
             win.refresh()      
         #win.addstr(header)
         to = 0
-        while True: 
+        while True:
+            ping_response_time_list = [] 
             for queue_index, queue in enumerate(queues):
                 if queue.empty():
+                    ping_response_time_list.append("")
                     continue
                 win = win_list[queue_index]
                 try:
-                    win.addstr(row_pos_list[queue_index], 0, f"{queue.get()}")
+                    ping_response = queue.get()
+                    #print(ping_response)
+                    '''
+                    Extract ping time from ping response.
+                    Store ping time in csv file.
+                    '''
+                    #try:
+                    ping_response_time = pingutils.get_ping_time(str(ping_response))
+                    #except Exception:
+                    #    traceback.print_exc()
+                    #    break
+                    ping_response_time_list.append(ping_response_time)
+
+                    win.addstr(row_pos_list[queue_index], 0, f"{ping_response}")
                     row_pos_list[queue_index] = row_pos_list[queue_index] + 1
                 except:
                     row_pos_list[queue_index] = 2
@@ -176,10 +204,15 @@ def screen(stdscr, queues, ip_addresses, packet_size):
                     win.addstr(f"PING {ip_addresses[queue_index]} with {packet_size} bytes of data\n\n", curses.color_pair(1)) 
                     #win.addstr(header)
                 win.refresh()
+            fp.flush()
+            #ping_response_time_list.insert(0, data_value)
+            csv_writer.writerow(ping_response_time_list)
+            data_value = data_value + 1
             time.sleep(1)
+            
             to = to + 1
-            #if to == 3:
-                #break
+            #if to == 120:
+             #   break
         
         #ignore = stdscr.getch()
 
@@ -223,7 +256,7 @@ def launch_process(platform, ip_addresses, packet_size, queues, procs):
 Main Process
 '''
 def main():
-
+    
     #ip_addresses = ["172.17.106.1", "172.17.106.2", "172.17.106.3", "172.17.106.4", "172.17.106.4"]    
     #ip_addresses = ["172.20.0.10", "172.20.0.11", "172.20.0.10", "172.20.0.11", "172.20.0.10",  "172.20.0.11", "172.20.0.10"]    
     #ip_addresses = ["172.20.0.10", "172.20.0.11", "172.20.0.65", "172.20.0.66", "172.20.0.67", "172.20.0.68"]
@@ -264,6 +297,10 @@ def main():
     # List for queues
     queues = []
     
+    # Save ping response time to csv file
+    fp = pingutils.setup_save_response_csv(ping_response_times_csv)
+    csv_writer = csv.writer(fp)
+
     # Use linux ping command to read output of ping if running on a linux machine
     # Use library pythonping if running on a windows machine
     if platform == "linux":
@@ -274,8 +311,13 @@ def main():
         print(f"Sorry, your current platform {platform} is not supported.")
         sys.exit()
 
+    # Call plot in a separate process to plot ping results
+    target = pingutils.plot
+    proc = Process(target=target)
+    proc.start()
+
     try:
-        wrapper(screen, queues, ip_addresses, packet_size)        
+        wrapper(screen, queues, ip_addresses, packet_size, csv_writer, fp)        
         '''
         while True:
             for q in queues:

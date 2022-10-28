@@ -1,6 +1,11 @@
 import ipaddress
 import sys
 import math
+from sys import platform
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 
 def read_ipaddress_file():
 
@@ -61,3 +66,71 @@ def windows_per_row(screen_maxwidth, window_width, window_spacing):
         windows_per_row = math.ceil(windows_per_row) 
 
     return windows_per_row
+
+def get_ping_time(response):
+    if response == "Request timed out":
+        return ""
+    else:
+        response = response.split(" ")
+        response_time = response[-1]
+        response_time = response_time.split("ms")
+        return response_time[0]
+
+def setup_save_response_csv(filename):
+    # get current working directory
+    cwd = os.path.abspath(os.getcwd())
+    # check if os is win or linux
+    if platform == "win32":
+        path = (cwd + "\\" + filename)
+    else:
+        path = (cwd + "/" + filename)
+
+    if os.path.exists(path):
+        os.remove(path)
+        f = open(path, "a")
+    else:
+        f = open(path, "a")
+
+    return f
+
+def animate(i):
+    x_data = []
+    y_data_list = []
+
+    while True:
+        try:
+            data = pd.read_csv("ping_response_times.csv")
+            break
+        except FileNotFoundError:
+            continue
+    #print(data.columns)
+    #print(data)
+    for i in range(len(data[data.columns[0]])):
+        x_data.append(i)
+
+    #print(len(x))
+    for col in data.columns:
+        y_data_list.append(data[col])
+        #print(len(data[col]))
+
+    
+    plt.cla()
+    #print(len(x_data))
+    #print(len(y_data_list[0]))
+    #print(len(x_data))
+    for i, y in enumerate(y_data_list):
+        plt.plot(x_data, y, linewidth=2, label=data.columns[i])
+    
+    plt.legend(loc="upper left")
+    plt.xlabel("Count (s)")
+    plt.ylabel("Ping Response Time (ms)")
+    plt.title("Ping Response Time (ms) from Pinging IP Addresses using the Ping Tool Program.")
+    #plt.cla()
+    #plt.plot(x_vals, y_vals)
+
+def plot():
+    #animate(1)
+    ani = FuncAnimation(plt.gcf(), animate, interval=1000)
+
+    plt.tight_layout()
+    plt.show()
