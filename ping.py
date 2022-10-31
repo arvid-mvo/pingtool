@@ -117,7 +117,7 @@ def screen(stdscr, queues, ip_addresses, packet_size, csv_writer, fp):
     if platform == "win32":
         window_width = 55 # window width
     else:
-        window_width = 65
+        window_width = 60
     window_height = 0 # window height
     window_height_adjust = 5 # adjust window height when creating new windows
     window_spacing = 5 # horizontal spacing between windows
@@ -309,9 +309,14 @@ def main(have_display):
     print(f"\nPinging the following ip addresses with {packet_size} bytes of data:")
     for idx, ip_addr in enumerate(ip_addresses):
         print(f"{idx + 1}. {ip_addr}")
-    
-    input("\nPress enter to continue:")
-    #packet_size = 56
+
+    input("Press enter to continue")
+    '''
+    # Enter packet size
+    # Default is 56 bytes
+    packet_size = input("\nEnter packet size (default is 56 bytes):")
+    '''
+    packet_size = 56
     
     # List for processes
     procs = []
