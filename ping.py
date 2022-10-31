@@ -310,14 +310,6 @@ def main(have_display):
     for idx, ip_addr in enumerate(ip_addresses):
         print(f"{idx + 1}. {ip_addr}")
 
-    input("Press enter to continue")
-    '''
-    # Enter packet size
-    # Default is 56 bytes
-    packet_size = input("\nEnter packet size (default is 56 bytes):")
-    '''
-    packet_size = 56
-    
     # List for processes
     procs = []
     # List for queues
