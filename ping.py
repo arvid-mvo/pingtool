@@ -16,6 +16,7 @@ import csv
 import os
 import traceback
 
+
 # File with ip addresses to ping
 ipaddress_filename = "ip_address.txt"
 
@@ -99,13 +100,13 @@ def screen(stdscr, queues, ip_addresses, packet_size, csv_writer, fp):
     #curses.newwin(nlines:height, ncols:width, begin_y: topside_y_coordinate, begin_x: leftside_x_coordinate)
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
     
-    # List of windows
+    # List of windows.
     win_list = []
 
-    # List which contains row position for each window which determines the position to start printing messages
+    # List which contains row position for each window which determines the position to start printing messages.
     row_pos_list = []
 
-    # Max height and width of the screen
+    # Max height and width of the screen.
     # height = rows = y
     # width = columns = x
     screen_maxheight, screen_maxwidth = stdscr.getmaxyx()
@@ -153,51 +154,61 @@ def screen(stdscr, queues, ip_addresses, packet_size, csv_writer, fp):
         except:
             print("Please check placement of windows. Exiting...")
             sys.exit()
-        # Append created windows to a list
+        # Append created windows to a list.
         win_list.append(win)
         row_pos_list.append(row_start)
         # Update beginx
         beginx = beginx + window_width + window_spacing
 
-    ip_addresses_temp = ip_addresses
-    #ip_addresses_temp.insert(0, "data_value")
-    csv_writer.writerow(ip_addresses_temp)
-    #fp.flush()
-    #exit()
-    
-    #ignore = stdscr.getch()
-    #sys.exit()
+    # Write list of ip addresses to the ip address csv file.
+    # The ip addresses will serve as the columns in the csv file.
+    csv_writer.writerow(ip_addresses)
+  
     #header = f"PING ipaddr (ipaddr) {packet_size} bytes of data\n\n"
+    
+    # keeps track of every data point written to the ip address csv file.
     data_value = 1
     try:
+        # Begin adding messages to the windows.
+        # Firstly, add the ip address we are pinging plus the packet size as the header message for each window.
+        # Ex:
+        #       PING 172.17.106.2 with 56 bytes of data
         for win_index, win in enumerate(win_list):
             win.addstr(f"PING {ip_addresses[win_index]} with {packet_size} bytes of data\n\n", curses.color_pair(1)) 
             win.refresh()      
         #win.addstr(header)
-        to = 0
+        #to = 0
+
+        # The while loop will read the ping response from each of the queues and display
+        # the message to the window.
         while True:
+            # This list will hold the ping response time from each ip address pinged.
+            # This will later be written to a file.
             ping_response_time_list = [] 
+            
+            # Read the queues
             for queue_index, queue in enumerate(queues):
                 if queue.empty():
                     ping_response_time_list.append("")
                     continue
                 win = win_list[queue_index]
                 try:
+                    # Get ping response from the current queue.
                     ping_response = queue.get()
-                    #print(ping_response)
-                    '''
-                    Extract ping time from ping response.
-                    Store ping time in csv file.
-                    '''
-                    #try:
+                   
+                    # Extract ping time from ping response using the get_ping_time() func.
                     ping_response_time = pingutils.get_ping_time(str(ping_response))
-                    #except Exception:
-                    #    traceback.print_exc()
-                    #    break
+                    # Add ping response time to the ping_response_time_list list.
                     ping_response_time_list.append(ping_response_time)
 
+                    # Display ping response message to current window.
                     win.addstr(row_pos_list[queue_index], 0, f"{ping_response}")
                     row_pos_list[queue_index] = row_pos_list[queue_index] + 1
+
+                # When we reach the end of the current window:
+                # 1. Set row position for current queue.
+                # 2. Clear window.
+                # 3. Add back header message.
                 except:
                     row_pos_list[queue_index] = 2
                     win.clear()
@@ -206,11 +217,15 @@ def screen(stdscr, queues, ip_addresses, packet_size, csv_writer, fp):
                 win.refresh()
             fp.flush()
             #ping_response_time_list.insert(0, data_value)
+
+            # Write ping response times to ping response time csv file.
             csv_writer.writerow(ping_response_time_list)
+            # Update data value
             data_value = data_value + 1
+            # Sleep 1 second.
             time.sleep(1)
             
-            to = to + 1
+            #to = to + 1
             #if to == 120:
              #   break
         
@@ -232,7 +247,7 @@ Args:
 This function launches a process to ping every ip addresses in the list of ipaddresses.
 The process is appended to a list of processes.
 '''
-# Launches processes responsible for pining ip addresses and storing response into a queue
+# Launches processes responsible for prining ip addresses and storing response into a queue.
 def launch_process(platform, ip_addresses, packet_size, queues, procs):
     for ip in ip_addresses:
         #command = ["ping", "-s", str(packet_size), "-c", str(count), ip]
@@ -255,42 +270,48 @@ def launch_process(platform, ip_addresses, packet_size, queues, procs):
 '''
 Main Process
 '''
-def main():
+def main(have_display):
     
     #ip_addresses = ["172.17.106.1", "172.17.106.2", "172.17.106.3", "172.17.106.4", "172.17.106.4"]    
     #ip_addresses = ["172.20.0.10", "172.20.0.11", "172.20.0.10", "172.20.0.11", "172.20.0.10",  "172.20.0.11", "172.20.0.10"]    
     #ip_addresses = ["172.20.0.10", "172.20.0.11", "172.20.0.65", "172.20.0.66", "172.20.0.67", "172.20.0.68"]
     
     while True:
-        # Ask user to either enter ip addresses manually or read a file with ipaddresses
-        print("Please select option 1 or 2 below:")
+        # Ask user to either enter ip addresses manually or read a file with ipaddresses.
         print("1. Enter ip addresses manually?")
         print("2. Read text file with ip addresses?")
-        option = input("")
-        
-        if int(option) == 1:
-            ip_addresses = pingutils.read_ipaddress_manually()
-            break
-        elif int(option) == 2:
-            ip_addresses = pingutils.read_ipaddress_file()    
-            break
+        option = input("Please select option 1 or 2: ")
+       
+        if option.isdigit():
+            if int(option) == 1:
+                ip_addresses = pingutils.read_ipaddress_manually()
+                break
+            elif int(option) == 2:
+                ip_addresses = pingutils.read_ipaddress_file(have_display)    
+                break
+            else:
+                print("Invalid option. Please select again.")
+                print("\n")
         else:
             print("Invalid option. Please select again.")
-            print("\n\n")
+            print("\n")
+    
+    # Enter packet size
+    # Default is 56 bytes
+    while True:
+        packet_size = input("\nEnter packet size (default is 56 bytes): ")
+        if packet_size.isdigit():
+            break
+        print("Please enter a valid packet size number.")
 
     #ip_addresses = read_ipaddress_manually()
     #ip_addresses = ["172.17.106.2"]
-    print("\nPinging the following ip addresses:")
+    print(f"\nPinging the following ip addresses with {packet_size} bytes of data:")
     for idx, ip_addr in enumerate(ip_addresses):
         print(f"{idx + 1}. {ip_addr}")
-
-    input("Press enter to continue")
-    '''
-    # Enter packet size
-    # Default is 56 bytes
-    packet_size = input("\nEnter packet size (default is 56 bytes):")
-    '''
-    packet_size = 56
+    
+    input("\nPress enter to continue:")
+    #packet_size = 56
     
     # List for processes
     procs = []
@@ -301,8 +322,8 @@ def main():
     fp = pingutils.setup_save_response_csv(ping_response_times_csv)
     csv_writer = csv.writer(fp)
 
-    # Use linux ping command to read output of ping if running on a linux machine
-    # Use library pythonping if running on a windows machine
+    # Use linux ping command to read output of ping if running on a linux machine.
+    # Use library pythonping if running on a windows machine.
     if platform == "linux":
         launch_process("linux", ip_addresses, packet_size, queues, procs)
     elif platform == "win32":
@@ -311,11 +332,14 @@ def main():
         print(f"Sorry, your current platform {platform} is not supported.")
         sys.exit()
 
-    # Call plot in a separate process to plot ping results
-    target = pingutils.plot
-    proc = Process(target=target)
-    proc.start()
-
+    # Call plot in a separate process to plot ping results.
+    # Only call plot when there is a display present.
+    # Would not work over ssh unless X11 forwarding is enabled (haven't tested).
+    if (platform == "linux" and have_display) or platform == "win32":
+        target = pingutils.plot
+        proc = Process(target=target)
+        proc.start()
+    
     try:
         wrapper(screen, queues, ip_addresses, packet_size, csv_writer, fp)        
         '''
@@ -338,8 +362,12 @@ def main():
 if __name__ == "__main__":
     
     # windows only
+    have_display = False
     if platform == "win32":
         multiprocessing.freeze_support()
+    else:# Linux
+        # check if display is present or not
+        have_display = bool(os.environ.get("DISPLAY", None))
     
-    main()
+    main(have_display)
     
