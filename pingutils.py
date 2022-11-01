@@ -161,14 +161,23 @@ Return Value:
     ping_response_time: Response time of a ping command.
 '''
 def get_ping_time(response):
-    if response == "Request timed out":
-        return ""
-    else:
-        response = response.split(" ")
-        response_time = response[-1]
-        response_time = response_time.split("ms")
-        return response_time[0]
+    if platform == "win32":
+        if response == "Request timed out":
+            return ""
+        else:
+            response = response.split(" ")
+            response_time = response[-1]
+            response_time = response_time.split("ms")
+            return response_time[0]
 
+    else:
+        response_list = response.split(" ")
+        if response_list[-1] != "ms":
+            return ""
+        else:
+            response_time = response_list[len(response_list) - 2]
+            response_time = response_time.split("=")
+            return response_time[1]
 '''
 setup_save_response_csv():
 
