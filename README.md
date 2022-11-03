@@ -1,30 +1,19 @@
 # pingtool
 
-**IMPORTANT** !!!
-Still in development with bugs to be fixed and other features to add.
+Pingtool is a program used to ping multiple ip address at the same time. It displays the output of multiple ping commands on the same screen. It also generates a plot of the ping response time for each ip address which updates in real time.
 
-Python tool for viewing the output of a ping command on multiple ip addresses at the same time.
+Pingtool was developed in **Python 3.8.10** and **3.10.6** for **Linux** and **Windows** respectively.
 
-The tool uses the curses library in python to generate a screen where the ping results are displayed. Multiprocessing is used to get the output of each ping result which is sent to the curses screen.
-
-Example output of ping_test:
-![Screenshot from 2022-09-05 19-46-36](https://user-images.githubusercontent.com/101291172/188507322-0cb28f2f-6c22-42da-9a34-d305c4ecdf3d.png)
-
-
-Version for both windows and Linux.
-
-Python Version 3.8.10
-
-## Modules
-- Multiprocessing (Process, and Queue)
+## Main Modules
+- Multiprocessing (Process
 - subprocess
+- pythonping(windows only)
 - curses
-- curses (wrapper)
-- time
+- pandas
+- matplotlib
+- tkinter
 - ipaddress
-- sys
-- pythonping (for windows only)
-
+- 
 # Python Script
 
 Clone repository:
