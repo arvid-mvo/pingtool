@@ -70,8 +70,10 @@ In both cases for options 1 and 2, the program checks for valid ip address enter
 
 After the user specifies the ip addresses they wish to ping, they are prompted to enter the packet size. The default size is 56 bytes and only integers are allowed. After the packet size is entered, the program shows the list of ip addresses it is going to ping along with the packet size and prompts the user to press enter to continue. This is depicted in fig. 3 below.
 
-![image](https://user-images.githubusercontent.com/101291172/199759888-2e49b18f-5fab-4917-b32b-a04638030f84.png)
-Figure 3: pingtool showing ip addresses to be pinged.
+<p align="center" width="100%">
+    <img width="576" alt="img2" src="https://user-images.githubusercontent.com/101291172/199763731-7f47baeb-db40-4549-a43b-0f6ef1871908.png">
+    <p align="center">Figure 3: pingtool showing ip addresses to be pinged.</p>
+</p>
 
 Once the user presses enter, the pingtool begins displaying the output of ping responses.
 
@@ -87,8 +89,10 @@ The curses terminal screen is configured with multiple windows where each window
 
 The program attempts to fit as many windows on the screen as possible which is dependent on the number of ip addresses to be pinged and the size (max width and height) of the terminal screen. The program may crash if it can’t fit all windows on the terminal screen so the user may have to ping fewer ip addresses.
 
-![image](https://user-images.githubusercontent.com/101291172/199760002-e38fe272-4c3e-4ecf-a1b9-6a412d0031a0.png)
-Figure 4: pingtool output showing the ping responses of ip addresses that are pinged.
+<p align="center" width="100%">
+    <img width="1053" alt="img3" src="https://user-images.githubusercontent.com/101291172/199763849-6de8bf86-40df-473d-9db8-0b35224193ae.png">
+    <p align="center">Figure 4: pingtool output showing the ping responses of ip addresses that are pinged.</p>
+</p>
 
 The program also generates a matplotlib plot of the ping response time (ms) for each ip address which updates in real time. It reads the ping response time from the ping response message for each ip and stores the value in a csv file (ping_response_times.csv). This csv file is read by a plot function which plots the response times. The matplotlib animate function is used to create the real time aspect of the plot by calling the plot function every second. Every time the plot function is called, all the ping response times are read from the csv file and plotted.
 
