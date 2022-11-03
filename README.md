@@ -45,12 +45,16 @@ Run script:
 
 # Operation
 <img width="698" alt="flow_chart" src="https://user-images.githubusercontent.com/101291172/199759577-f97ae49c-5752-4322-a6b1-e0f327919b2b.png">
+
 Figure 1: Simplified flow chart showing the operation of the pingtool program.
 
 The flow chart in fig. 1 shows a simplified operation of the pingtool program which is further discussed in the following sections.
+
 ## Input Option
 When pingtool starts, it prompts the user to enter either option 1 or option 2 as depicted in fig. 2 below.
-(img)
+
+![image](https://user-images.githubusercontent.com/101291172/199759810-74bd9611-6a63-4521-8c97-de9429720c64.png)
+Figure 2: pingtool prompting the user to select either option 1 or option 2.
 
 If option 1 is selected, the ip addresses are entered manually line by line. The user types “done” when they are finished.
 
@@ -61,7 +65,9 @@ In both cases for options 1 and 2, the program checks for valid ip address enter
 ## Enter Packet Size
 
 After the user specifies the ip addresses they wish to ping, they are prompted to enter the packet size. The default size is 56 bytes and only integers are allowed. After the packet size is entered, the program shows the list of ip addresses it is going to ping along with the packet size and prompts the user to press enter to continue. This is depicted in fig. 3 below.
-(img)
+
+![image](https://user-images.githubusercontent.com/101291172/199759888-2e49b18f-5fab-4917-b32b-a04638030f84.png)
+Figure 3: pingtool showing ip addresses to be pinged.
 
 Once the user presses enter, the pingtool begins displaying the output of ping responses.
 
@@ -76,7 +82,9 @@ While the concurrent ping processes are pinging the ip address, the main process
 The curses terminal screen is configured with multiple windows where each window contains the ping response from each ip address pinged (number of windows = number of ip address to be pinged). The program goes into a loop reading the latest ping response placed in each queue by the ping process and displays the response from top of the window. Responses are displayed line by line and once the height of the window is reached, the window is refreshed and responses are displayed from the top again. Example terminal screen is shown in fig. 4.
 
 The program attempts to fit as many windows on the screen as possible which is dependent on the number of ip addresses to be pinged and the size (max width and height) of the terminal screen. The program may crash if it can’t fit all windows on the terminal screen so the user may have to ping fewer ip addresses.
-(img)
+
+![image](https://user-images.githubusercontent.com/101291172/199760002-e38fe272-4c3e-4ecf-a1b9-6a412d0031a0.png)
+Figure 4: pingtool output showing the ping responses of ip addresses that are pinged.
 
 The program also generates a matplotlib plot of the ping response time (ms) for each ip address which updates in real time. It reads the ping response time from the ping response message for each ip and stores the value in a csv file (ping_response_times.csv). This csv file is read by a plot function which plots the response times. The matplotlib animate function is used to create the real time aspect of the plot by calling the plot function every second. Every time the plot function is called, all the ping response times are read from the csv file and plotted.
 
@@ -89,12 +97,15 @@ On windows, pingtool uses the **pythonping** library to execute ping commands an
 If you wish to convert the pingtool source code (ping.py and pingutils.py) to an executable, do the following steps.
 
 Install pyinstaller:
+
 &nbsp;&nbsp;&nbsp;&nbsp; `pip install pyinstaller`
 
 Execute the following command:
+
 &nbsp;&nbsp;&nbsp;&nbsp;`pyinstaller --onefile ping.py`
 
 pyinstaller will create two directories, build and dist. The executable can be found in dist. Run the executable and the program should run!
 
 # References
+
 [1] https://docs.python.org/3/howto/curses.html
