@@ -19,7 +19,7 @@ Clone repository:
 
 &nbsp;&nbsp;&nbsp;&nbsp;`git clone https://github.com/maneskull/pingtool.git`
 
-Create virutal environment (venv):
+Create virtual environment (venv):
 
 &nbsp;&nbsp;&nbsp;&nbsp;`cd pingtool`
 
@@ -27,7 +27,7 @@ Create virutal environment (venv):
 
 &nbsp;&nbsp;&nbsp;&nbsp;`python -m venv venv`
 
-Activate virutal environment (venv):
+Activate virtual environment (venv):
 
 &nbsp;&nbsp;&nbsp;&nbsp;Linux:
 
