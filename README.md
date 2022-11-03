@@ -5,47 +5,36 @@ Pingtool is a program used to ping multiple ip address at the same time. It disp
 Pingtool was developed in **Python 3.8.10** and **3.10.6** for **Linux** and **Windows** respectively.
 
 ## Main Modules
-- Multiprocessing (Process
+- Multiprocessing
 - subprocess
-- pythonping(windows only)
+- pythonping (windows only)
 - curses
 - pandas
 - matplotlib
 - tkinter
 - ipaddress
-- 
-# Python Script
 
+# Using pingtool
 Clone repository:
-
-  `git clone https://github.com/maneskull/ping_test.git`
+  `git clone https://github.com/maneskull/pingtool.git`
   
-Change directory to either Linux or Windows:
+Create virutal environment (venv):
+  `cd pingtool
+  `mkdir venv`
+  `python -m venv venv`
 
-  `cd linux`
-
-or
-
-  `cd windows`
-  
-Create virtual environment (venv):
-
-`python -m venv venv`
-
-Activate the virtual environment (venv):
-
-`source venv/bin/activate`
-  
-or on windows:
-
-`venv/Scripts/activate`
-   
-Install the above modules
+Activate virutal environment (venv):
+Linux:
+  `source venv/bin/activate`
+Windows:
+	`venv/Scripts/activate`
+ 
+Install main modules. Some additional modules will need to be installed.
 
 Run script:
+  `python ping.py`
 
-`python ping.py`
-
+ 
 ## Operation
 
 When the script is executed, it prompts the user to enter the IP addresses they wish to ping either manually or reading from a file. Basic checking is done on the ip addresses entered to verify they are of correct format and the script will notfiy the user of any errors.
