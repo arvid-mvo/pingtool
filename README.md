@@ -46,7 +46,7 @@ Run script:
 # Operation
 <p align="center" width="100%">
     <img width="698" alt="flow_chart" src="https://user-images.githubusercontent.com/101291172/199759577-f97ae49c-5752-4322-a6b1-e0f327919b2b.png">
-    Figure 1: Simplified flow chart showing the operation of the pingtool program.
+    <p>Figure 1: Simplified flow chart showing the operation of the pingtool program.</p>
 </p>
  
 
