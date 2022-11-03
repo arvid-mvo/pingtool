@@ -20,19 +20,27 @@ Clone repository:
 &nbsp;&nbsp;&nbsp;&nbsp;`git clone https://github.com/maneskull/pingtool.git`
 
 Create virutal environment (venv):
+
 &nbsp;&nbsp;&nbsp;&nbsp;`cd pingtool`
+
 &nbsp;&nbsp;&nbsp;&nbsp;`mkdir venv`
+
 &nbsp;&nbsp;&nbsp;&nbsp;`python -m venv venv`
 
 Activate virutal environment (venv):
+
 &nbsp;&nbsp;&nbsp;&nbsp;Linux:
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`source venv/bin/activate`
+
 &nbsp;&nbsp;&nbsp;&nbsp;Windows:
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`venv/Scripts/activate`
  
 Install main modules. Some additional modules will need to be installed.
 
 Run script:
+
 &nbsp;&nbsp;&nbsp;&nbsp;`python ping.py`
 
 # Operation
