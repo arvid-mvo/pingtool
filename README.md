@@ -1,4 +1,4 @@
-# ping_test
+# pingtool
 
 **IMPORTANT** !!!
 Still in development with bugs to be fixed and other features to add.
