@@ -44,9 +44,9 @@ Run script:
 &nbsp;&nbsp;&nbsp;&nbsp;`python ping.py`
 
 # Operation
-<center>
+<p align="center" width="100%">
 <img width="698" alt="flow_chart" src="https://user-images.githubusercontent.com/101291172/199759577-f97ae49c-5752-4322-a6b1-e0f327919b2b.png">
-</center>
+</p>
  
 Figure 1: Simplified flow chart showing the operation of the pingtool program.
 
