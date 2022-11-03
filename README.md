@@ -16,6 +16,7 @@ Pingtool was developed in **Python 3.8.10** and **3.10.6** for **Linux** and **W
 
 # Using pingtool
 Clone repository:
+
 &nbsp;&nbsp;&nbsp;&nbsp;`git clone https://github.com/maneskull/pingtool.git`
 
 Create virutal environment (venv):
