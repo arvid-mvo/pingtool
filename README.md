@@ -56,10 +56,9 @@ The flow chart in fig. 1 shows a simplified operation of the pingtool program wh
 When pingtool starts, it prompts the user to enter either option 1 or option 2 as depicted in fig. 2 below.
 
 <p align="center" width="100%">
-    <img src="https://user-images.githubusercontent.com/101291172/199759810-74bd9611-6a63-4521-8c97-de9429720c64.png">
+    <img width="596" alt="img1" src="https://user-images.githubusercontent.com/101291172/199762806-c30cbdf5-a45b-4ff0-8cc9-37db0eb93f24.png">
+    <p align="center">Figure 2: pingtool prompting the user to select either option 1 or option 2.</p>
 </p>
-
-Figure 2: pingtool prompting the user to select either option 1 or option 2.
 
 If option 1 is selected, the ip addresses are entered manually line by line. The user types “done” when they are finished.
 
