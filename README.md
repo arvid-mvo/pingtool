@@ -16,22 +16,31 @@ Pingtool was developed in **Python 3.8.10** and **3.10.6** for **Linux** and **W
 
 # Using pingtool
 Clone repository:
+
   `git clone https://github.com/maneskull/pingtool.git`
   
 Create virutal environment (venv):
+
   `cd pingtool
+
   `mkdir venv`
+  
   `python -m venv venv`
 
 Activate virutal environment (venv):
+
 Linux:
-  `source venv/bin/activate`
+
+   `source venv/bin/activate`
+
 Windows:
-	`venv/Scripts/activate`
+	
+   `venv/Scripts/activate`
  
 Install main modules. Some additional modules will need to be installed.
 
 Run script:
+  
   `python ping.py`
 
  
