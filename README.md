@@ -35,7 +35,7 @@ Activate virtual environment (venv):
 
 &nbsp;&nbsp;&nbsp;&nbsp;Windows:
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`venv/Scripts/activate`
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`venv\Scripts\activate`
  
 Install main modules. Some additional modules will need to be installed.
 
